@@ -1,4 +1,4 @@
-import { cloneGrid, generateGrid } from "../util/tileUtils";
+import { generateGrid } from "../util/tileUtils";
 import Tile from "./Tile";
 import "./Grid.css";
 import { createSignal } from "@jacksonotto/pulse";
@@ -13,10 +13,10 @@ const Grid = (props: GridProps) => {
       .fill([])
       .map(() => Array(props.size).fill(-1));
 
-  const [grid, setGrid] = createSignal<number[][]>(cleanGrid());
+  const [grid, setGrid] = createSignal<number[][]>([]);
 
   const generate = () => {
-    setGrid(cloneGrid(generateGrid(cleanGrid())));
+    setGrid(generateGrid(cleanGrid()));
   };
 
   generate();

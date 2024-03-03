@@ -2,9 +2,6 @@ import { numTiles, tiles } from "../data/tiles";
 
 const randomTile = () => Math.floor(Math.random() * numTiles);
 
-export const cloneGrid = (grid: number[][]) =>
-  grid.map((row) => row.map((item) => item));
-
 const getPosPairs = (grid: number[][]) => {
   const posPairs: [number, number][] = [];
 
@@ -12,33 +9,61 @@ const getPosPairs = (grid: number[][]) => {
     for (let j = 0; j < grid.length; j++) {
       if (grid[i][j] > -1) continue;
 
-      if (i - 1 >= 0) {
-        if (grid[i - 1][j] > -1) {
-          posPairs.push([i, j]);
-        }
-      }
-
-      if (i + 1 < grid.length) {
-        if (grid[i + 1][j] > -1) {
-          posPairs.push([i, j]);
-        }
-      }
-
-      if (j - 1 >= 0) {
-        if (grid[i][j - 1] > -1) {
-          posPairs.push([i, j]);
-        }
-      }
-
-      if (j + 1 < grid.length) {
-        if (grid[i][j + 1] > -1) {
-          posPairs.push([i, j]);
-        }
-      }
+      if (i - 1 >= 0 && grid[i - 1][j] > -1) posPairs.push([i, j]);
+      if (j - 1 >= 0 && grid[i][j - 1] > -1) posPairs.push([i, j]);
+      if (i + 1 < grid.length && grid[i + 1][j] > -1) posPairs.push([i, j]);
+      if (j + 1 < grid.length && grid[i][j + 1] > -1) posPairs.push([i, j]);
     }
   }
 
   return posPairs;
+};
+
+const filterPossibilities = <T extends "vertical" | "horizontal">(
+  grid: number[][],
+  possibilities: number[],
+  row: number,
+  col: number,
+  border: T,
+  position: T extends "vertical" ? "above" | "below" : "left" | "right",
+) => {
+  if (row >= 0 && row < grid.length && col >= 0 && col < grid.length) {
+    const tileVariant = grid[row][col];
+    const tileMap = tiles[tileVariant];
+
+    if (tileMap) {
+      return possibilities.filter((item) => {
+        const tempMap = tiles[item];
+
+        for (let i = 0; i < tileMap.length; i++) {
+          let rowIndex = 0;
+          let colIndex = 0;
+
+          if (border === "vertical") {
+            if (position === "above") rowIndex = tileMap.length - 1;
+            colIndex = i;
+          } else {
+            if (position === "left") colIndex = tileMap.length - 1;
+            rowIndex = i;
+          }
+
+          if (
+            tileMap[rowIndex][colIndex] !==
+            tempMap[
+              border === "vertical" ? tileMap.length - rowIndex - 1 : rowIndex
+            ][
+              border === "horizontal" ? tileMap.length - colIndex - 1 : colIndex
+            ]
+          )
+            return false;
+        }
+
+        return true;
+      });
+    }
+  }
+
+  return possibilities;
 };
 
 const getPossibilities = (grid: number[][], row: number, col: number) => {
@@ -46,65 +71,38 @@ const getPossibilities = (grid: number[][], row: number, col: number) => {
     .fill(0)
     .map((_, index) => index);
 
-  if (row > 0) {
-    const tileVariant = grid[row - 1][col];
-    const tileMap = tiles[tileVariant];
-
-    if (tileMap) {
-      possibilities = possibilities.filter((item) => {
-        const tempMap = tiles[item];
-        return (
-          (tileMap[2][1] === 0 && tempMap[0][1] === 0) ||
-          (tileMap[2][1] === 1 && tempMap[0][1] === 1)
-        );
-      });
-    }
-  }
-
-  if (col > 0) {
-    const tileVariant = grid[row][col - 1];
-    const tileMap = tiles[tileVariant];
-
-    if (tileMap) {
-      possibilities = possibilities.filter((item) => {
-        const tempMap = tiles[item];
-        return (
-          (tileMap[1][2] === 0 && tempMap[1][0] === 0) ||
-          (tileMap[1][2] === 1 && tempMap[1][0] === 1)
-        );
-      });
-    }
-  }
-
-  if (row + 1 < grid.length) {
-    const tileVariant = grid[row + 1][col];
-    const tileMap = tiles[tileVariant];
-
-    if (tileMap) {
-      possibilities = possibilities.filter((item) => {
-        const tempMap = tiles[item];
-        return (
-          (tileMap[0][1] === 0 && tempMap[2][1] === 0) ||
-          (tileMap[0][1] === 1 && tempMap[2][1] === 1)
-        );
-      });
-    }
-  }
-
-  if (col + 1 < grid.length) {
-    const tileVariant = grid[row][col + 1];
-    const tileMap = tiles[tileVariant];
-
-    if (tileMap) {
-      possibilities = possibilities.filter((item) => {
-        const tempMap = tiles[item];
-        return (
-          (tileMap[1][0] === 0 && tempMap[1][2] === 0) ||
-          (tileMap[1][0] === 1 && tempMap[1][2] === 1)
-        );
-      });
-    }
-  }
+  possibilities = filterPossibilities(
+    grid,
+    possibilities,
+    row - 1,
+    col,
+    "vertical",
+    "above",
+  );
+  possibilities = filterPossibilities(
+    grid,
+    possibilities,
+    row + 1,
+    col,
+    "vertical",
+    "below",
+  );
+  possibilities = filterPossibilities(
+    grid,
+    possibilities,
+    row,
+    col - 1,
+    "horizontal",
+    "left",
+  );
+  possibilities = filterPossibilities(
+    grid,
+    possibilities,
+    row,
+    col + 1,
+    "horizontal",
+    "right",
+  );
 
   return possibilities;
 };

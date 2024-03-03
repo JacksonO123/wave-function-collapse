@@ -7,6 +7,7 @@
 
 .tile-wrapper {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
   padding: 8px;
   width: 100%;
@@ -17,6 +18,4 @@
 .collapse-grid {
   width: 100%;
   height: 100%;
-  /* display: flex; */
-  /* justify-content: center; */
 }
