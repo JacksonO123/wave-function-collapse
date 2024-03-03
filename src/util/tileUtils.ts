@@ -10,9 +10,9 @@ export const getPosPairs = (grid: number[][]) => {
       if (grid[i][j] > -1) continue;
 
       if (i - 1 >= 0 && grid[i - 1][j] > -1) posPairs.push([i, j]);
-      if (j - 1 >= 0 && grid[i][j - 1] > -1) posPairs.push([i, j]);
-      if (i + 1 < grid.length && grid[i + 1][j] > -1) posPairs.push([i, j]);
-      if (j + 1 < grid.length && grid[i][j + 1] > -1) posPairs.push([i, j]);
+      else if (j - 1 >= 0 && grid[i][j - 1] > -1) posPairs.push([i, j]);
+      else if (i + 1 < grid.length && grid[i + 1][j] > -1) posPairs.push([i, j]);
+      else if (j + 1 < grid.length && grid[i][j + 1] > -1) posPairs.push([i, j]);
 
       if (posPairs.length > 1) {
         const swapIndex = Math.floor(Math.random() * posPairs.length);

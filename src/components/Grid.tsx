@@ -43,6 +43,10 @@ const Grid = (props: GridProps) => {
     '4x4': 'Four'
   };
 
+  const updateSize = (newSize: TileSize) => {
+    if (size() !== newSize) setSize(newSize);
+  };
+
   return (
     <div class="grid-wrapper">
       <div class="controls">
@@ -55,7 +59,7 @@ const Grid = (props: GridProps) => {
         {Object.entries(buttonMap).map(([key, value]) => (
           <RadioInput
             checked={size() === key}
-            onClick={() => setSize(key as TileSize)}
+            onClick={() => updateSize(key as TileSize)}
           >
             {value}
           </RadioInput>
