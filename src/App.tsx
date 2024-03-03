@@ -10,7 +10,7 @@ const App = () => {
         {Array(numTiles)
           .fill(null)
           .map((_, index) => (
-            <Tile variant={index} size={60} border />
+            <Tile variant={index} size={30} border />
           ))}
       </section>
       <section class="collapse-grid">

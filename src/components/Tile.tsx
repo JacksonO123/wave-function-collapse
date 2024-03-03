@@ -9,13 +9,23 @@ type TypeProps = {
 
 const Tile = (props: TypeProps) => {
   if (props.variant < -1 || props.variant >= numTiles)
-    return <div>Inalid tile: {props.variant}</div>;
+    return (
+      <div
+        style={{
+          width: "100%",
+          height: "100%",
+          "font-size": "10px",
+          background: "red",
+        }}
+      >
+        {props.variant}
+      </div>
+    );
 
   const tileMap = props.variant === -1 ? blankTile : tiles[props.variant];
 
   return (
     <div
-      class="tile"
       style={{
         width: props.size === undefined ? "100%" : `${props.size}px`,
         height: props.size === undefined ? "100%" : `${props.size}px`,

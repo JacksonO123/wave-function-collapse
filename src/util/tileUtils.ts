@@ -114,8 +114,8 @@ type PosData = {
 };
 
 export const generateGrid = (grid: number[][]) => {
-  const randX = Math.floor(Math.random() * grid.length);
-  const randY = Math.floor(Math.random() * grid.length);
+  const randX = Math.floor(Math.random() * grid.length - 2) + 1;
+  const randY = Math.floor(Math.random() * grid.length - 2) + 1;
 
   grid[randX][randY] = randomTile();
 
@@ -134,8 +134,9 @@ export const generateGrid = (grid: number[][]) => {
         possibilities,
       };
 
-      if (lowestPos === null) lowestPos = posData;
-      else if (
+      if (lowestPos === null) {
+        lowestPos = posData;
+      } else if (
         lowestPos.possibilities.length > posData.possibilities.length &&
         posData.possibilities.length > 0
       ) {
@@ -149,7 +150,8 @@ export const generateGrid = (grid: number[][]) => {
     const newTile =
       possibilities[Math.floor(Math.random() * possibilities.length)];
 
-    grid[(lowestPos as PosData).row][(lowestPos as PosData).col] = newTile;
+    grid[(lowestPos as PosData).row][(lowestPos as PosData).col] =
+      newTile || -2;
   }
 
   return grid;

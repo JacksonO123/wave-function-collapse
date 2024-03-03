@@ -11,7 +11,18 @@ const Grid = (props: GridProps) => {
   const cleanGrid = () =>
     Array(props.size)
       .fill([])
-      .map(() => Array(props.size).fill(-1));
+      .map((_, index) => {
+        if (index === 0 || index === props.size - 1) {
+          return Array(props.size).fill(0);
+        }
+
+        const arr = Array(props.size).fill(-1);
+
+        arr[0] = 0;
+        arr[arr.length - 1] = 0;
+
+        return arr;
+      });
 
   const [grid, setGrid] = createSignal<number[][]>([]);
 
