@@ -19,6 +19,8 @@ const Grid = (props: GridProps) => {
     setGrid(cloneGrid(generateGrid(cleanGrid())));
   };
 
+  generate();
+
   return (
     <div class="grid-wrapper">
       <button onClick={generate}>Generate</button>

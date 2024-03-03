@@ -1,11 +1,11 @@
 import { numTiles, tiles } from "../data/tiles";
 
-export const randomTile = () => Math.floor(Math.random() * numTiles);
+const randomTile = () => Math.floor(Math.random() * numTiles);
 
 export const cloneGrid = (grid: number[][]) =>
   grid.map((row) => row.map((item) => item));
 
-export const getPosPairs = (grid: number[][]) => {
+const getPosPairs = (grid: number[][]) => {
   const posPairs: [number, number][] = [];
 
   for (let i = 0; i < grid.length; i++) {
@@ -41,11 +41,7 @@ export const getPosPairs = (grid: number[][]) => {
   return posPairs;
 };
 
-export const getPossibilities = (
-  grid: number[][],
-  row: number,
-  col: number,
-) => {
+const getPossibilities = (grid: number[][], row: number, col: number) => {
   let possibilities = Array(numTiles)
     .fill(0)
     .map((_, index) => index);
