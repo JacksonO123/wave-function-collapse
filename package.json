@@ -1,0 +1,13 @@
+{
+  "type": "module",
+  "scripts": {
+    "dev": "vite --port 3000",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@jacksonotto/pulse": "^0.2.2",
+    "@jacksonotto/vite-plugin-pulse": "^0.1.1",
+    "vite": "^5.1.4"
+  }
+}

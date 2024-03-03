@@ -1,0 +1,16 @@
+.box {
+  width: 100%;
+  aspect-ratio: 1;
+}
+
+.row {
+  display: flex;
+}
+
+.active {
+  background: #007bff;
+}
+
+.blank {
+  background: white;
+}
