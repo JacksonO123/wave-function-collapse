@@ -27,7 +27,18 @@ const Grid = (props: GridProps) => {
   const [grid, setGrid] = createSignal<number[][]>([]);
 
   const generate = () => {
-    setGrid(generateGrid(cleanGrid()));
+    const tempGrid = generateGrid(cleanGrid());
+    // .map((item) => {
+    //   item.pop();
+    //   item.shift();
+
+    //   return item;
+    // });
+
+    // tempGrid.pop();
+    // tempGrid.shift();
+
+    setGrid(tempGrid);
   };
 
   generate();

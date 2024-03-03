@@ -2,7 +2,7 @@ import { numTiles, tiles } from "../data/tiles";
 
 const randomTile = () => Math.floor(Math.random() * numTiles);
 
-const getPosPairs = (grid: number[][]) => {
+export const getPosPairs = (grid: number[][]) => {
   const posPairs: [number, number][] = [];
 
   for (let i = 0; i < grid.length; i++) {
@@ -13,6 +13,14 @@ const getPosPairs = (grid: number[][]) => {
       if (j - 1 >= 0 && grid[i][j - 1] > -1) posPairs.push([i, j]);
       if (i + 1 < grid.length && grid[i + 1][j] > -1) posPairs.push([i, j]);
       if (j + 1 < grid.length && grid[i][j + 1] > -1) posPairs.push([i, j]);
+
+      if (posPairs.length > 1) {
+        const swapIndex = Math.floor(Math.random() * posPairs.length);
+
+        const temp = posPairs[swapIndex];
+        posPairs[swapIndex] = posPairs[posPairs.length - 1];
+        posPairs[posPairs.length - 1] = temp;
+      }
     }
   }
 
@@ -113,9 +121,37 @@ type PosData = {
   possibilities: number[];
 };
 
+const getLowestCoordData = (
+  grid: number[][],
+  coords: [number, number][],
+): PosData | null => {
+  let lowestPos: PosData | null = null;
+
+  coords.forEach(([row, col]) => {
+    const possibilities = getPossibilities(grid, row, col);
+
+    const posData: PosData = {
+      row,
+      col,
+      possibilities,
+    };
+
+    if (lowestPos === null) {
+      lowestPos = posData;
+    } else if (
+      lowestPos.possibilities.length > posData.possibilities.length &&
+      posData.possibilities.length > 0
+    ) {
+      lowestPos = posData;
+    }
+  });
+
+  return lowestPos;
+};
+
 export const generateGrid = (grid: number[][]) => {
-  const randX = Math.floor(Math.random() * grid.length - 2) + 1;
-  const randY = Math.floor(Math.random() * grid.length - 2) + 1;
+  const randX = Math.floor(Math.random() * (grid.length - 2)) + 1;
+  const randY = Math.floor(Math.random() * (grid.length - 2)) + 1;
 
   grid[randX][randY] = randomTile();
 
@@ -123,35 +159,15 @@ export const generateGrid = (grid: number[][]) => {
 
   for (let i = 0; i < totalTiles; i++) {
     const posPairs = getPosPairs(grid);
-    let lowestPos: PosData | null = null;
+    const lowest = getLowestCoordData(grid, posPairs);
 
-    posPairs.forEach(([row, col]) => {
-      const possibilities = getPossibilities(grid, row, col);
+    if (lowest === null) continue;
 
-      const posData: PosData = {
-        row,
-        col,
-        possibilities,
-      };
-
-      if (lowestPos === null) {
-        lowestPos = posData;
-      } else if (
-        lowestPos.possibilities.length > posData.possibilities.length &&
-        posData.possibilities.length > 0
-      ) {
-        lowestPos = posData;
-      }
-    });
-
-    if (lowestPos === null) continue;
-
-    const possibilities = (lowestPos as PosData).possibilities;
+    const possibilities = lowest.possibilities;
     const newTile =
       possibilities[Math.floor(Math.random() * possibilities.length)];
 
-    grid[(lowestPos as PosData).row][(lowestPos as PosData).col] =
-      newTile || -2;
+    grid[lowest.row][lowest.col] = newTile === undefined ? -2 : newTile;
   }
 
   return grid;

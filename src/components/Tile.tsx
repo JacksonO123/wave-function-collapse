@@ -27,8 +27,9 @@ const Tile = (props: TypeProps) => {
   return (
     <div
       style={{
-        width: props.size === undefined ? "100%" : `${props.size}px`,
+        // width: props.size === undefined ? "100%" : `${props.size}px`,
         height: props.size === undefined ? "100%" : `${props.size}px`,
+        "aspect-ratio": 1,
         "min-width": props.size === undefined ? undefined : `${props.size}px`,
         "min-height": props.size === undefined ? undefined : `${props.size}px`,
         border: props.border ? "1px solid black" : "none",
