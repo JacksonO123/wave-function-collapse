@@ -1,5 +1,5 @@
-import "./Tile.css";
-import { blankTile, numTiles, tiles } from "../data/tiles";
+import './Tile.css';
+import { getBlankTile, getNumTiles, getTiles } from '../data/tiles';
 
 type TypeProps = {
   variant: number;
@@ -8,37 +8,36 @@ type TypeProps = {
 };
 
 const Tile = (props: TypeProps) => {
-  if (props.variant < -1 || props.variant >= numTiles)
+  if (props.variant < -1 || props.variant >= getNumTiles())
     return (
       <div
         style={{
-          width: "100%",
-          height: "100%",
-          "font-size": "10px",
-          background: "red",
+          width: '100%',
+          height: '100%',
+          'font-size': '10px',
+          background: 'red'
         }}
       >
         {props.variant}
       </div>
     );
 
-  const tileMap = props.variant === -1 ? blankTile : tiles[props.variant];
+  const tileMap = props.variant === -1 ? getBlankTile() : getTiles()[props.variant];
 
   return (
     <div
       style={{
-        // width: props.size === undefined ? "100%" : `${props.size}px`,
-        height: props.size === undefined ? "100%" : `${props.size}px`,
-        "aspect-ratio": 1,
-        "min-width": props.size === undefined ? undefined : `${props.size}px`,
-        "min-height": props.size === undefined ? undefined : `${props.size}px`,
-        border: props.border ? "1px solid black" : "none",
+        height: props.size === undefined ? '100%' : `${props.size}px`,
+        'aspect-ratio': 1,
+        'min-width': props.size === undefined ? undefined : `${props.size}px`,
+        'min-height': props.size === undefined ? undefined : `${props.size}px`,
+        border: props.border ? '1px solid black' : 'none'
       }}
     >
       {tileMap.map((rowMap) => (
         <div class="row">
           {rowMap.map((num) => (
-            <div class={`box ${num === 1 ? "active" : "blank"}`} />
+            <div class={`box ${num === 1 ? 'active' : 'blank'}`} />
           ))}
         </div>
       ))}

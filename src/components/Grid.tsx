@@ -1,7 +1,9 @@
-import { generateGrid } from "../util/tileUtils";
-import Tile from "./Tile";
-import "./Grid.css";
-import { createSignal } from "@jacksonotto/pulse";
+import { generateGrid } from '../util/tileUtils';
+import Tile from './Tile';
+import './Grid.css';
+import { createEffect, createSignal } from '@jacksonotto/pulse';
+import { TileSize, getTileSize, setTileSize } from '../data/tiles';
+import RadioInput from './RadioInput';
 
 type GridProps = {
   size: number;
@@ -25,27 +27,40 @@ const Grid = (props: GridProps) => {
       });
 
   const [grid, setGrid] = createSignal<number[][]>([]);
+  const [size, setSize] = createSignal<TileSize>(getTileSize());
 
   const generate = () => {
-    const tempGrid = generateGrid(cleanGrid());
-    // .map((item) => {
-    //   item.pop();
-    //   item.shift();
-
-    //   return item;
-    // });
-
-    // tempGrid.pop();
-    // tempGrid.shift();
-
-    setGrid(tempGrid);
+    setGrid(generateGrid(cleanGrid()));
   };
 
-  generate();
+  createEffect(() => {
+    setTileSize(size());
+    generate();
+  });
+
+  const buttonMap: Record<TileSize, string> = {
+    '3x3': 'Three',
+    '4x4': 'Four'
+  };
 
   return (
     <div class="grid-wrapper">
-      <button onClick={generate}>Generate</button>
+      <div class="controls">
+        <button
+          onClick={generate}
+          class="generate"
+        >
+          Generate
+        </button>
+        {Object.entries(buttonMap).map(([key, value]) => (
+          <RadioInput
+            checked={size() === key}
+            onClick={() => setSize(key as TileSize)}
+          >
+            {value}
+          </RadioInput>
+        ))}
+      </div>
       <div class="grid">
         {grid().map((row) => (
           <div class="grid-row">

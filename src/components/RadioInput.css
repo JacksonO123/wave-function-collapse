@@ -1,0 +1,19 @@
+.radio-wrapper {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  border: 1px solid #007bff4d;
+  border-radius: 6px;
+  padding: 6px;
+  cursor: pointer;
+  transition: 0.15s;
+}
+
+.radio-wrapper:hover {
+  border-color: #007bff80;
+  background: #007bff08;
+}
+
+.radio-wrapper:active {
+  background: #007bff1a;
+}

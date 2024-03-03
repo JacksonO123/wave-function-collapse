@@ -1,6 +1,6 @@
-import { numTiles, tiles } from "../data/tiles";
+import { getNumTiles, getTiles } from '../data/tiles';
 
-const randomTile = () => Math.floor(Math.random() * numTiles);
+const randomTile = () => Math.floor(Math.random() * getNumTiles());
 
 export const getPosPairs = (grid: number[][]) => {
   const posPairs: [number, number][] = [];
@@ -27,40 +27,38 @@ export const getPosPairs = (grid: number[][]) => {
   return posPairs;
 };
 
-const filterPossibilities = <T extends "vertical" | "horizontal">(
+const filterPossibilities = <T extends 'vertical' | 'horizontal'>(
   grid: number[][],
   possibilities: number[],
   row: number,
   col: number,
   border: T,
-  position: T extends "vertical" ? "above" | "below" : "left" | "right",
+  position: T extends 'vertical' ? 'above' | 'below' : 'left' | 'right'
 ) => {
   if (row >= 0 && row < grid.length && col >= 0 && col < grid.length) {
     const tileVariant = grid[row][col];
-    const tileMap = tiles[tileVariant];
+    const tileMap = getTiles()[tileVariant];
 
     if (tileMap) {
       return possibilities.filter((item) => {
-        const tempMap = tiles[item];
+        const tempMap = getTiles()[item];
 
         for (let i = 0; i < tileMap.length; i++) {
           let rowIndex = 0;
           let colIndex = 0;
 
-          if (border === "vertical") {
-            if (position === "above") rowIndex = tileMap.length - 1;
+          if (border === 'vertical') {
+            if (position === 'above') rowIndex = tileMap.length - 1;
             colIndex = i;
           } else {
-            if (position === "left") colIndex = tileMap.length - 1;
+            if (position === 'left') colIndex = tileMap.length - 1;
             rowIndex = i;
           }
 
           if (
             tileMap[rowIndex][colIndex] !==
-            tempMap[
-              border === "vertical" ? tileMap.length - rowIndex - 1 : rowIndex
-            ][
-              border === "horizontal" ? tileMap.length - colIndex - 1 : colIndex
+            tempMap[border === 'vertical' ? tileMap.length - rowIndex - 1 : rowIndex][
+              border === 'horizontal' ? tileMap.length - colIndex - 1 : colIndex
             ]
           )
             return false;
@@ -75,42 +73,14 @@ const filterPossibilities = <T extends "vertical" | "horizontal">(
 };
 
 const getPossibilities = (grid: number[][], row: number, col: number) => {
-  let possibilities = Array(numTiles)
+  let possibilities = Array(getNumTiles())
     .fill(0)
     .map((_, index) => index);
 
-  possibilities = filterPossibilities(
-    grid,
-    possibilities,
-    row - 1,
-    col,
-    "vertical",
-    "above",
-  );
-  possibilities = filterPossibilities(
-    grid,
-    possibilities,
-    row + 1,
-    col,
-    "vertical",
-    "below",
-  );
-  possibilities = filterPossibilities(
-    grid,
-    possibilities,
-    row,
-    col - 1,
-    "horizontal",
-    "left",
-  );
-  possibilities = filterPossibilities(
-    grid,
-    possibilities,
-    row,
-    col + 1,
-    "horizontal",
-    "right",
-  );
+  possibilities = filterPossibilities(grid, possibilities, row - 1, col, 'vertical', 'above');
+  possibilities = filterPossibilities(grid, possibilities, row + 1, col, 'vertical', 'below');
+  possibilities = filterPossibilities(grid, possibilities, row, col - 1, 'horizontal', 'left');
+  possibilities = filterPossibilities(grid, possibilities, row, col + 1, 'horizontal', 'right');
 
   return possibilities;
 };
@@ -121,10 +91,7 @@ type PosData = {
   possibilities: number[];
 };
 
-const getLowestCoordData = (
-  grid: number[][],
-  coords: [number, number][],
-): PosData | null => {
+const getLowestCoordData = (grid: number[][], coords: [number, number][]): PosData | null => {
   let lowestPos: PosData | null = null;
 
   coords.forEach(([row, col]) => {
@@ -133,7 +100,7 @@ const getLowestCoordData = (
     const posData: PosData = {
       row,
       col,
-      possibilities,
+      possibilities
     };
 
     if (lowestPos === null) {
@@ -164,8 +131,7 @@ export const generateGrid = (grid: number[][]) => {
     if (lowest === null) continue;
 
     const possibilities = lowest.possibilities;
-    const newTile =
-      possibilities[Math.floor(Math.random() * possibilities.length)];
+    const newTile = possibilities[Math.floor(Math.random() * possibilities.length)];
 
     grid[lowest.row][lowest.col] = newTile === undefined ? -2 : newTile;
   }
