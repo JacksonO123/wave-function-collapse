@@ -7,7 +7,7 @@ export const blankTile = [
 export const tiles = [
   [
     [0, 0, 0],
-    [0, 1, 0],
+    [0, 0, 0],
     [0, 0, 0],
   ],
   [

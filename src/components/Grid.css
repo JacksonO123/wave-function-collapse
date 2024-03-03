@@ -4,9 +4,8 @@
   gap: 12px;
   height: 100%;
   padding-bottom: 12px;
-  aspect-ratio: 1;
   justify-content: flex-start;
-  align-items: flex-start;
+  align-items: center;
 }
 
 .grid {
