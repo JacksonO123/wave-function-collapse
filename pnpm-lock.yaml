@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   '@jacksonotto/pulse':
-    specifier: ^0.2.3
-    version: 0.2.3
+    specifier: ^0.2.4
+    version: 0.2.4
   '@jacksonotto/vite-plugin-pulse':
     specifier: ^0.1.1
     version: 0.1.1
@@ -445,8 +445,8 @@ packages:
     dev: false
     optional: true
 
-  /@jacksonotto/pulse@0.2.3:
-    resolution: {integrity: sha512-0/+w1UxatQ7LMYRnds65hYKi3zBR4y4/Sh+AUX+hJsoZ8y/zk/Wj0fFuiFKV6B8r3zdbjrhMowyFvplDeYRTlQ==}
+  /@jacksonotto/pulse@0.2.4:
+    resolution: {integrity: sha512-EsYkCKFCy3btwa+tO1v+Ccp5ke8UsJBEQjNfPzlDsR+ZXMh827cdcniUsHIEHz9vVzmulxNb84HhrI1EnITMQg==}
     dependencies:
       '@jacksonotto/signals': 1.3.2
       csstype: 3.1.3

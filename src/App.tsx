@@ -18,7 +18,10 @@ const App = () => {
           ))}
       </section>
       <section class="collapse-grid">
-        <Grid size={30} />
+        <Grid
+          width={40}
+          height={25}
+        />
       </section>
     </div>
   );

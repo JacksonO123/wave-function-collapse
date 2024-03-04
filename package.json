@@ -6,7 +6,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@jacksonotto/pulse": "^0.2.3",
+    "@jacksonotto/pulse": "^0.2.4",
     "@jacksonotto/vite-plugin-pulse": "^0.1.1",
     "vite": "^5.1.4"
   }

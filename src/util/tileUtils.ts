@@ -1,12 +1,8 @@
-import { getNumTiles, getTiles } from '../data/tiles';
-
-const randomTile = () => Math.floor(Math.random() * getNumTiles());
-
 export const getPosPairs = (grid: number[][]) => {
   const posPairs: [number, number][] = [];
 
   for (let i = 0; i < grid.length; i++) {
-    for (let j = 0; j < grid.length; j++) {
+    for (let j = 0; j < grid[i].length; j++) {
       if (grid[i][j] > -1) continue;
 
       if (i - 1 >= 0 && grid[i - 1][j] > -1) posPairs.push([i, j]);
@@ -29,19 +25,20 @@ export const getPosPairs = (grid: number[][]) => {
 
 const filterPossibilities = <T extends 'vertical' | 'horizontal'>(
   grid: number[][],
+  tiles: number[][][],
   possibilities: number[],
   row: number,
   col: number,
   border: T,
   position: T extends 'vertical' ? 'above' | 'below' : 'left' | 'right'
 ) => {
-  if (row >= 0 && row < grid.length && col >= 0 && col < grid.length) {
+  if (row >= 0 && row < grid.length && col >= 0 && col < grid[0].length) {
     const tileVariant = grid[row][col];
-    const tileMap = getTiles()[tileVariant];
+    const tileMap = tiles[tileVariant];
 
     if (tileMap) {
       return possibilities.filter((item) => {
-        const tempMap = getTiles()[item];
+        const tempMap = tiles[item];
 
         for (let i = 0; i < tileMap.length; i++) {
           let rowIndex = 0;
@@ -72,15 +69,15 @@ const filterPossibilities = <T extends 'vertical' | 'horizontal'>(
   return possibilities;
 };
 
-const getPossibilities = (grid: number[][], row: number, col: number) => {
-  let possibilities = Array(getNumTiles())
+const getPossibilities = (grid: number[][], tiles: number[][][], row: number, col: number) => {
+  let possibilities = Array(tiles.length)
     .fill(0)
     .map((_, index) => index);
 
-  possibilities = filterPossibilities(grid, possibilities, row - 1, col, 'vertical', 'above');
-  possibilities = filterPossibilities(grid, possibilities, row + 1, col, 'vertical', 'below');
-  possibilities = filterPossibilities(grid, possibilities, row, col - 1, 'horizontal', 'left');
-  possibilities = filterPossibilities(grid, possibilities, row, col + 1, 'horizontal', 'right');
+  possibilities = filterPossibilities(grid, tiles, possibilities, row - 1, col, 'vertical', 'above');
+  possibilities = filterPossibilities(grid, tiles, possibilities, row + 1, col, 'vertical', 'below');
+  possibilities = filterPossibilities(grid, tiles, possibilities, row, col - 1, 'horizontal', 'left');
+  possibilities = filterPossibilities(grid, tiles, possibilities, row, col + 1, 'horizontal', 'right');
 
   return possibilities;
 };
@@ -91,11 +88,15 @@ type PosData = {
   possibilities: number[];
 };
 
-const getLowestCoordData = (grid: number[][], coords: [number, number][]): PosData | null => {
+const getLowestCoordData = (
+  grid: number[][],
+  tiles: number[][][],
+  coords: [number, number][]
+): PosData | null => {
   let lowestPos: PosData | null = null;
 
   coords.forEach(([row, col]) => {
-    const possibilities = getPossibilities(grid, row, col);
+    const possibilities = getPossibilities(grid, tiles, row, col);
 
     const posData: PosData = {
       row,
@@ -116,17 +117,17 @@ const getLowestCoordData = (grid: number[][], coords: [number, number][]): PosDa
   return lowestPos;
 };
 
-export const generateGrid = (grid: number[][]) => {
-  const randX = Math.floor(Math.random() * (grid.length - 2)) + 1;
-  const randY = Math.floor(Math.random() * (grid.length - 2)) + 1;
+export const generateGrid = (grid: number[][], tiles: number[][][]) => {
+  const randRow = Math.floor(Math.random() * (grid.length - 2)) + 1;
+  const randCol = Math.floor(Math.random() * (grid[0].length - 2)) + 1;
 
-  grid[randX][randY] = randomTile();
+  grid[randRow][randCol] = Math.floor(Math.random() * tiles.length);
 
-  const totalTiles = grid.length * grid.length;
+  const totalTiles = grid.length * grid[0].length;
 
   for (let i = 0; i < totalTiles; i++) {
     const posPairs = getPosPairs(grid);
-    const lowest = getLowestCoordData(grid, posPairs);
+    const lowest = getLowestCoordData(grid, tiles, posPairs);
 
     if (lowest === null) continue;
 

@@ -1,24 +1,42 @@
-import { generateGrid } from '../util/tileUtils';
 import Tile from './Tile';
 import './Grid.css';
 import { createEffect, createSignal } from '@jacksonotto/pulse';
-import { TileSize, getTileSize, setTileSize } from '../data/tiles';
+import { TileSize, getTileSize, getTiles, setTileSize } from '../data/tiles';
 import RadioInput from './RadioInput';
+import { Input } from '../types/worker';
 
 type GridProps = {
-  size: number;
+  width: number;
+  height: number;
 };
 
 const Grid = (props: GridProps) => {
-  const cleanGrid = () =>
-    Array(props.size)
+  const [grid, setGrid] = createSignal<number[][]>([]);
+  const [size, setSize] = createSignal<TileSize>(getTileSize());
+
+  const workerCb = (message: MessageEvent<number[][]>) => {
+    setGrid(message.data);
+  };
+
+  const createGenerateWorker = () => {
+    const worker = new Worker(new URL('../worker.ts', import.meta.url), { type: 'module' });
+
+    worker.addEventListener('message', workerCb);
+
+    return worker;
+  };
+
+  let gridWorker = createGenerateWorker();
+
+  const cleanGrid = (): number[][] =>
+    Array(props.height)
       .fill([])
       .map((_, index) => {
-        if (index === 0 || index === props.size - 1) {
-          return Array(props.size).fill(0);
+        if (index === 0 || index === props.height - 1) {
+          return Array(props.width).fill(0);
         }
 
-        const arr = Array(props.size).fill(-1);
+        const arr = Array(props.width).fill(-1);
 
         arr[0] = 0;
         arr[arr.length - 1] = 0;
@@ -26,15 +44,19 @@ const Grid = (props: GridProps) => {
         return arr;
       });
 
-  const [grid, setGrid] = createSignal<number[][]>([]);
-  const [size, setSize] = createSignal<TileSize>(getTileSize());
-
   const generate = () => {
-    setGrid(generateGrid(cleanGrid()));
+    const input: Input = {
+      grid: cleanGrid(),
+      tiles: getTiles()
+    };
+
+    gridWorker.postMessage(input);
   };
 
   createEffect(() => {
     setTileSize(size());
+    gridWorker.terminate();
+    gridWorker = createGenerateWorker();
     generate();
   });
 
