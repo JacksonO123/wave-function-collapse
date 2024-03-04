@@ -12,7 +12,6 @@ type GridProps = {
 
 const Grid = (props: GridProps) => {
   const [grid, setGrid] = createSignal<number[][]>([]);
-  const [size, setSize] = createSignal<TileSize>(getTileSize());
 
   const workerCb = (message: MessageEvent<number[][]>) => {
     setGrid(message.data);
@@ -54,7 +53,6 @@ const Grid = (props: GridProps) => {
   };
 
   createEffect(() => {
-    setTileSize(size());
     gridWorker.terminate();
     gridWorker = createGenerateWorker();
     generate();
@@ -66,7 +64,7 @@ const Grid = (props: GridProps) => {
   };
 
   const updateSize = (newSize: TileSize) => {
-    if (size() !== newSize) setSize(newSize);
+    if (getTileSize() !== newSize) setTileSize(newSize);
   };
 
   return (
@@ -80,7 +78,7 @@ const Grid = (props: GridProps) => {
         </button>
         {Object.entries(buttonMap).map(([key, value]) => (
           <RadioInput
-            checked={size() === key}
+            checked={getTileSize() === key}
             onClick={() => updateSize(key as TileSize)}
           >
             {value}
