@@ -3,6 +3,7 @@
   gap: 12px;
   height: 100%;
   width: 100%;
+  max-width: 1400px;
   padding-bottom: 12px;
   align-items: flex-start;
   justify-content: center;
